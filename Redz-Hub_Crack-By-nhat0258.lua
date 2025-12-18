@@ -903,22 +903,20 @@ Type = Type
 return Instance
 end
 
-text
-
 SetChildren = function(Instance, Children)
 if Children then
-table.foreach(Children, function(_,Child)
+for _,Child in ipairs(Children) do
 Child.Parent = Instance
-end)
+end
 end
 return Instance
 end
 
 SetProps = function(Instance, Props)
 if Props then
-table.foreach(Props, function(prop, value)
+for prop, value in pairs(Props) do
 Instance[prop] = value
-end)
+end
 end
 return Instance
 end
@@ -928,8 +926,6 @@ local args = {...}
 if type(args) ~= "table" then return end
 local new = Instance.new(args[1])
 local Children = {}
-
-text
 
 if type(args[2]) == "table" then
 	SetProps(new, args[2])
@@ -947,8 +943,6 @@ end
 local function Save(file)
 if readfile and isfile and isfile(file) then
 local decode = HttpService:JSONDecode(readfile(file))
-
-text
 
 	if type(decode) == "table" then
 		if rawget(decode, "UISize") then redzlib.Save["UISize"] = decode["UISize"] end
@@ -968,8 +962,6 @@ table.insert(tab, func)
 end
 return func
 end
-
-text
 
 function Funcs:FireCallback(tab, ...)
 for _,v in ipairs(tab) do
@@ -994,8 +986,6 @@ end
 function Funcs:GetConnectionFunctions(ConnectedFuncs, func)
 local Connected = { Function = func, Connected = true }
 
-text
-
 function Connected:Disconnect()
 	if self.Connected then
 		table.remove(ConnectedFuncs, table.find(ConnectedFuncs, self.Function))
@@ -1015,8 +1005,6 @@ end
 function Funcs:GetCallback(Configs, index)
 local func = Configs[index] or Configs.Callback or function()end
 
-text
-
 if type(func) == "table" then
 	return ({function(Value) func[1][func[2]] = Value end})
 end
@@ -1027,10 +1015,6 @@ end
 local Connections, Connection = {}, redzlib.Connection do
 local function NewConnectionList(List)
 if type(List) ~= "table" then return end
-
-text
-
-text
 
 for _,CoName in ipairs(List) do
 	local ConnectedFuncs, Connect = {}, {}
@@ -1076,8 +1060,6 @@ CheckFlag = function(Name)
 return type(Name) == "string" and Flags[Name] ~= nil
 end
 
-text
-
 GetFlag = function(Name)
 return type(Name) == "string" and Flags[Name]
 end
@@ -1094,8 +1076,6 @@ Connection.FlagsChanged:Connect(function(Flag, Value)
 local ScriptFile = Settings.ScriptFile
 if not db and ScriptFile and writefile then
 db=true;task.wait(0.1);db=false
-
-text
 
 	local Success, Encoded = pcall(function()
 		-- local _Flags = {}
@@ -1139,8 +1119,8 @@ Instance.InputBegan:Connect(function(Input)
 if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
 while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do task.wait()
 end
-end
 func()
+end
 end)
 end
 
@@ -1151,8 +1131,6 @@ local NewVal = Configs[3] or Configs.NewVal
 local Time = Configs[4] or Configs.Time or 0.5
 local TweenWait = Configs[5] or Configs.wait or false
 local TweenInfo = TweenInfo.new(Time, Enum.EasingStyle.Quint)
-
-text
 
 local Tween = TweenService:Create(Instance, TweenInfo, {[Prop] = NewVal})
 Tween:Play()
@@ -1168,10 +1146,6 @@ SetProps(Instance, {
 Active = true,
 AutoButtonColor = false
 })
-
-text
-
-text
 
 local DragStart, StartPos, InputOn
 
@@ -1191,7 +1165,7 @@ Instance.InputBegan:Connect(function(Input)
 		StartPos = Instance.Position
 		DragStart = Input.Position
 		
-		while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do RunService.Heartbeat:Wait()
+		while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do task.wait()
 			if InputOn then
 				Update(Input)
 			end
@@ -1255,8 +1229,6 @@ BackgroundColor3 = Theme["Color Hub 2"],
 AutoButtonColor = false
 }), props), "Frame")
 
-text
-
 New.MouseEnter:Connect(function()
 New.BackgroundTransparency = 0.4
 end)
@@ -1293,8 +1265,6 @@ Text = "",
 RichText = true
 }), "Text")
 
-text
-
 local DescL = InsertTheme(Create("TextLabel", {
 Font = Enum.Font.Gotham,
 TextColor3 = Theme["Color Dark Text"],
@@ -1308,7 +1278,6 @@ TextXAlignment = "Left",
 Text = "",
 RichText = true
 }), "DarkText")
-text
 
 local Frame = Make("Button", Instance, {
 Size = UDim2.new(1, 0, 0, 25),
@@ -1316,7 +1285,7 @@ AutomaticSize = "Y",
 Name = "Option"
 })Make("Corner", Frame, UDim.new(0, 6))
 
-LabelHolder = Create("Frame", Frame, {
+local LabelHolder = Create("Frame", Frame, {
 AutomaticSize = "Y",
 BackgroundTransparency = 1,
 Size = HolderSize,
@@ -1382,8 +1351,6 @@ if type(index) ~= "string" or index:find("rbxassetid://") or #index == 0 then
 return index
 end
 
-text
-
 local firstMatch = nil
 index = string.lower(index):gsub("lucide", ""):gsub("-", "")
 
@@ -1391,7 +1358,7 @@ if self.Icons[index] then
 return self.Icons[index]
 end
 
-for Name, Icon in self.Icons do
+for Name, Icon in pairs(self.Icons) do
 if Name == index then
 return Icon
 elseif not firstMatch and Name:find(index, 1, true) then
@@ -1405,14 +1372,12 @@ end
 function redzlib:SetTheme(NewTheme)
 if not VerifyTheme(NewTheme) then return end
 
-text
-
 redzlib.Save.Theme = NewTheme
 SaveJson("redz library V5.json", redzlib.Save)
 Theme = redzlib.Themes[NewTheme]
 
-Comnection:FireConnection("ThemeChanged", NewTheme)
-table.foreach(redzlib.Instances, function(_,Val)
+Connection:FireConnection("ThemeChanged", NewTheme)
+for _,Val in ipairs(redzlib.Instances) do
 if Val.Type == "Gradient" then
 Val.Instance.Color = Theme["Color Hub 1"]
 elseif Val.Type == "Frame" then
@@ -1428,7 +1393,7 @@ Val.Instance[GetColor(Val.Instance)] = Theme["Color Dark Text"]
 elseif Val.Type == "ScrollBar" then
 Val.Instance[GetColor(Val.Instance)] = Theme["Color Theme"]
 end
-end)
+end
 end
 
 function redzlib:SetScale(NewScale)
@@ -1440,8 +1405,6 @@ function redzlib:MakeWindow(Configs)
 local WTitle = Configs[1] or Configs.Name or Configs.Title or "redz Library V5"
 local WMiniText = Configs[2] or Configs.SubTitle or "by : redz9999"
 
-text
-
 Settings.ScriptFile = Configs[3] or Configs.SaveFolder or false
 
 local function LoadFile()
@@ -1450,10 +1413,8 @@ if type(File) ~= "string" then return end
 if not readfile or not isfile then return end
 local s, r = pcall(isfile, File)
 
-text
-
 if s and r then
-	local s, _Flags = pcall(readfile, File)
+	local s, _Flags = pcall(function() return readfile(File) end)
 	
 	if s and type(_Flags) == "string" then
 		local s,r = pcall(function() return HttpService:JSONDecode(_Flags) end)
@@ -1571,8 +1532,6 @@ local Pos1, Pos2 = ControlSize1.Position, ControlSize2.Position
 ControlSize1.Position = UDim2.fromOffset(math.clamp(Pos1.X.Offset, 430, 1000), math.clamp(Pos1.Y.Offset, 200, 500))
 ControlSize2.Position = UDim2.new(0, math.clamp(Pos2.X.Offset, 135, 250), 1, 0)
 
-text
-
 MainScroll.Size = UDim2.new(0, ControlSize2.Position.X.Offset, 1, -TopBar.Size.Y.Offset)
 Containers.Size = UDim2.new(1, -MainScroll.Size.X.Offset, 1, -TopBar.Size.Y.Offset)
 MainFrame.Size = ControlSize1.Position
@@ -1636,8 +1595,6 @@ function Window:MinimizeBtn()
 if WaitClick then return end
 WaitClick = true
 
-text
-
 if Minimized then
 	MinimizeButton.Image = "rbxassetid://10734896206"
 	CreateTween({MainFrame, "Size", SaveSize, 0.25, true})
@@ -1667,8 +1624,6 @@ BackgroundColor3 = Theme["Color Hub 2"],
 AutoButtonColor = false
 }))
 
-text
-
 local Stroke, Corner
 if Configs.Corner then
 	Corner = Make("Corner", Button)
@@ -1676,7 +1631,7 @@ if Configs.Corner then
 end
 if Configs.Stroke then
 	Stroke = Make("Stroke", Button)
-	SetProps(Stroke, Configs.Corner)
+	SetProps(Stroke, Configs.Stroke)
 end
 
 SetProps(Button, Configs.Button)
@@ -1701,8 +1656,6 @@ if MainFrame:FindFirstChild("Dialog") then return end
 if Minimized then
 Window:MinimizeBtn()
 end
-
-text
 
 local DTitle = Configs[1] or Configs.Title or "Dialog"
 local DText = Configs[2] or Configs.Text or "This is a Dialog"
@@ -1797,16 +1750,16 @@ function Dialog:Close()
 	CreateTween({Frame, "Transparency", 1, 0.15, true})
 	Screen:Destroy()
 end
-table.foreach(DOptions, function(_,Button)
+for _,Button in ipairs(DOptions) do
 	Dialog:Button(Button)
-end)
+end
 return Dialog
 end
 function Window:SelectTab(TabSelect)
 if type(TabSelect) == "number" then
 redzlib.Tabs[TabSelect].func:Enable()
 else
-for _,Tab in pairs(redzlib.Tabs) do
+for _,Tab in ipairs(redzlib.Tabs) do
 if Tab.Cont == TabSelect.Cont then
 Tab.func:Enable()
 end
@@ -1819,8 +1772,6 @@ function Window:MakeTab(paste, Configs)
 if type(paste) == "table" then Configs = paste end
 local TName = Configs[1] or Configs.Title or "Tab!"
 local TIcon = Configs[2] or Configs.Icon or ""
-
-text
 
 TIcon = redzlib:GetIcon(TIcon)
 if not TIcon:find("rbxassetid://") or TIcon:gsub("rbxassetid://", ""):len() < 6 then
@@ -1891,18 +1842,18 @@ if not FirstTab then Container.Parent = Containers end
 
 local function Tabs()
 	if Container.Parent then return end
-	for _,Frame in pairs(ContainerList) do
+	for _,Frame in ipairs(ContainerList) do
 		if Frame:IsA("ScrollingFrame") and Frame ~= Container then
 			Frame.Parent = nil
 		end
 	end
 	Container.Parent = Containers
 	Container.Size = UDim2.new(1, 0, 1, 150)
-	table.foreach(redzlib.Tabs, function(_,Tab)
+	for _,Tab in ipairs(redzlib.Tabs) do
 		if Tab.Cont ~= Container then
 			Tab.func:Disable()
 		end
-	end)
+	end
 	CreateTween({Container, "Size", UDim2.new(1, 0, 1, 0), 0.3})
 	CreateTween({LabelTitle, "TextTransparency", 0, 0.35})
 	CreateTween({LabelIcon, "ImageTransparency", 0, 0.35})
@@ -2197,7 +2148,7 @@ function Tab:AddDropdown(Configs)
 	
 	local function CalculateSize()
 		local Count = 0
-		for _,Frame in pairs(ScrollFrame:GetChildren()) do
+		for _,Frame in ipairs(ScrollFrame:GetChildren()) do
 			if Frame:IsA("Frame") or Frame.Name == "Option" then
 				Count = Count + 1
 			end
@@ -2376,14 +2327,20 @@ function Tab:AddDropdown(Configs)
 		
 		AddNewOptions = function(List, Clear)
 			if Clear then
-				table.foreach(Options, RemoveOption)
+				for _,v in pairs(Options) do
+					RemoveOption(v.Name)
+				end
 			end
-			table.foreach(List, AddOption)
+			for _,Name in ipairs(List) do
+				AddOption(Name)
+			end
 			CallbackSelected()
 			UpdateSelected()
 		end
 		
-		table.foreach(DOptions, AddOption)
+		for _,Name in ipairs(DOptions) do
+			AddOption(Name)
+		end
 		CallbackSelected()
 		UpdateSelected()
 	end
@@ -2408,18 +2365,14 @@ function Tab:AddDropdown(Configs)
 	function Dropdown:Add(...)
 		local NewOptions = {...}
 		if type(NewOptions[1]) == "table" then
-			table.foreach(Option, function(_,Name)
-				AddOption(Name)
-			end)
+			AddNewOptions(NewOptions[1])
 		else
-			table.foreach(NewOptions, function(_,Name)
-				AddOption(Name)
-			end)
+			AddNewOptions(NewOptions)
 		end
 	end
 	function Dropdown:Remove(Option)
 		for index, Value in pairs(GetOptions()) do
-			if type(Option) == "number" and index == Option or Value.Name == "Option" then
+			if type(Option) == "number" and index == Option or Value.Name == Option then
 				RemoveOption(index, Value.Value)
 			end
 		end
@@ -2428,13 +2381,13 @@ function Tab:AddDropdown(Configs)
 		if type(Option) == "string" then
 			for _,Val in pairs(Options) do
 				if Val.Name == Option then
-					Val.Active()
+					Select(Val)
 				end
 			end
 		elseif type(Option) == "number" then
 			for ind,Val in pairs(Options) do
 				if ind == Option then
-					Val.Active()
+					Select(Val)
 				end
 			end
 		end
