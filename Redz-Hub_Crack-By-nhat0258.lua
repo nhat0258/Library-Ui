@@ -1,11 +1,4 @@
-
-
-gpt-5-high
-Generating...
-
-viết tiếp
-
-
+--[[ Redz UI Crack By Nhat0258]]--
 local MarketplaceService = game:GetService("MarketplaceService")
 local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
